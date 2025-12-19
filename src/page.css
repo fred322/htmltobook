@@ -1,0 +1,103 @@
+
+/* Définition de la taille A4 et des marges */
+@page {
+    size: A4;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Style général pour la page */
+body {
+    padding: 0;
+    width: 21cm; /* Largeur d'une feuille A4 */
+    height: 29.7cm; /* Hauteur d'une feuille A4 */
+    font-family: Arial, sans-serif;
+    line-height: 1.0;
+    background-color: red;
+    margin: auto;
+}
+
+article {
+    position: absolute;
+    z-index: 100;
+}
+
+#pagesWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#pagesWrapper .page {
+    position: relative;
+    margin: auto;
+    border: solid 1px black;
+    box-sizing: border-box;
+    width: 21cm; /* Largeur d'une feuille A4 */
+    height: 29.7cm; /* Hauteur d'une feuille A4 */
+}
+
+/* Style pour l'en-tête */
+#pagesWrapper .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3cm;
+    background-color: rgba(55,255,50,0.3);
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+}
+
+/* Style pour le pied de page */
+#pagesWrapper .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3cm;
+    background-color: rgba(255,125,125,0.3);
+    border-top: 1px solid #ccc;
+    font-size: 0.8em;
+
+}
+
+/* Style pour le contenu principal */
+.content {
+    padding-left: 1cm;
+    padding-right: 1cm;
+}
+
+/*.break_page {
+    break-before: page;
+    height: 2.5cm;
+    background-color: blue;
+}*/
+
+/*@media screen {
+    .break_page { 
+        height: 30px;
+        background-color: blue;
+    }
+}*/
+
+/*.header, .footer {
+    border: solid 1px black;
+}*/
+
+/* Adaptation pour l'impression */
+@media print {
+    .page-number:after {
+        content: counter(page);
+    }
+    body {
+        counter-reset: page;
+    }
+    .content {
+        counter-increment: page;
+        /*page-break-after: always;*/
+    }
+}

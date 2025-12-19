@@ -1,0 +1,1 @@
+chromium --headless --disable-gpu --print-to-pdf="sortie.pdf" "test.html"
