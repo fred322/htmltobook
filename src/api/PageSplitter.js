@@ -2,7 +2,7 @@ import domUtils from "./DomUtils.js"
 
 class PageSplitter {
     constructor() {
-        this.breakableTagNames = [ "div", "p", "table", "section" ];
+        this.breakableTagNames = [ "div", "p", "table", "section", "tr" ];
     }
 
     isBreakableElement(element) {

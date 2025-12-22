@@ -37,17 +37,15 @@ class DomUtils {
         if (parentElement.children.length != 0) {
             for (let child of parentElement.children) {
                 if (positionParent + child.offsetTop + child.offsetHeight >= posY) {
-                    if (child.tagName.toLowerCase() == "div") {
-                        return this.findClosestChild(child, positionParent + child.offsetTop, posY, filter);
-                    }
-                    if (filter == null || filter(child)) {
-                        return child;
+                    let found = this.findClosestChild(child, positionParent + child.offsetTop, posY, filter);
+                    if (found != null) {
+                        return found;
                     }
                     break;
                 }
             }
         }
-        return parentElement;
+        return filter(parentElement) ? parentElement : null;
     }
 }
 
