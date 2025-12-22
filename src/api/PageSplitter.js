@@ -26,29 +26,24 @@ class PageSplitter {
         let headerSize = domUtils.cmToPixel(3);
         let contentSize = pageSize - 2 * headerSize;
         let posToBreak = headerSize + contentSize;
-        let pagesCount = 1;
 
         let element = null;
         let posY = posToBreak;
         let articleNode = document.getElementsByTagName("article")[0];
         let firstElement = document.createElement("div");
+        let existingBreaks = document.getElementsByTagName("break_page");
         firstElement.setAttribute("style", "height: " + headerSize + "px");
         articleNode.insertBefore(firstElement, articleNode.children[0]);
         do {
             console.log("Look at pixel " + posY);
+
+            posY += this._breakPagesToPos(existingBreaks, posY) * pageSize;
             element = domUtils.findClosestChild(articleNode, articleNode.offsetTop, 
                     posY, (el) => { return this.isBreakableElement(el)});
             if (element != null && element.tagName.toLowerCase() != "article") {
-                let newBreak = document.createElement("div");
-                //newBreak.classList.add("break_page");
                 let toBreak = this.findBreakableTagNames(element);
                 if (toBreak != null) {
-                    let posEndOfPage = posY - posToBreak + pageSize;
-                    console.log("Position to break; " + domUtils.getPositionAbsolute(toBreak));
-                    let leftSize = posEndOfPage - domUtils.getPositionAbsolute(toBreak) + headerSize;
-                    //toBreak.setAttribute("style", "margin-top: " + leftSize + "px");
-                    newBreak.setAttribute("style", "height: " + leftSize + "px");
-                    toBreak.parentElement.insertBefore(newBreak, toBreak);
+                    this._breakAtElement(toBreak, posY - posToBreak);
                 }
             }
             else {
@@ -59,25 +54,44 @@ class PageSplitter {
             
             // go to next page.
             posY += pageSize;
-            pagesCount += 1;
         } while (element != null);
+    }
 
-        let pageBorders = document.getElementById("pagesWrapper");
-        for (let idx = 0; idx < pagesCount; idx++) {
-            let newPage = document.createElement("div");
-            newPage.classList.add("page");
-            let contentPage = document.createElement("div");
-            newPage.appendChild(contentPage);
-            let header = document.createElement("div");
-            header.classList.add("header");
-            header.setAttribute("style", "position: absolute");
-            let footer = document.createElement("div");
-            footer.classList.add("footer");
-            footer.setAttribute("style", "position: absolute");
-            newPage.appendChild(header);
-            newPage.appendChild(footer);
-            pageBorders.appendChild(newPage);
+    /**
+     * 
+     * @param {Element[]} breaksElement 
+     * @param {number} toPosY 
+     */
+    _breakPagesToPos(breaksElement, toPosY) {
+        let count = 0;
+        for (let element of breaksElement) {
+            if (element.offsetHeight == 0 && !element.classList.contains("broken")) {
+                if (domUtils.getPositionAbsolute(element) < toPosY) {
+                    this._breakAtElement(element, 0);
+                    count++;
+                }
+                else {
+                    break;
+                }
+            }
+            element.classList.add("broken");
         }
+        return count;
+    }
+
+    _breakAtElement(element, offset) {
+        let newBreak = document.createElement("div");
+        element.parentElement.insertBefore(newBreak, element);
+        let newBreak2 = document.createElement("div");
+        element.parentElement.insertBefore(newBreak2, element);
+
+        let pageSize = domUtils.cmToPixel(domUtils.a4Height);
+        let headerSize = domUtils.cmToPixel(3);
+        let posEndOfPage = offset + pageSize; 
+        console.log("Position to break; " + domUtils.getPositionAbsolute(newBreak));
+        let leftSize = posEndOfPage - domUtils.getPositionAbsolute(newBreak);
+        newBreak.setAttribute("style", "height: " + leftSize + "px");
+        newBreak2.setAttribute("style", "height: " + headerSize + "px");
     }
 }
 

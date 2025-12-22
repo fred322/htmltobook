@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
   });
 
   const page = await browser.newPage();
-  await page.goto('file:///home/fred/workspace/AcrobatomaticBuildSystem/doc/html/test.html', { waitUntil: 'networkidle0' });
+  await page.goto('http://localhost:8080/test.html', { waitUntil: 'networkidle0' });
   await page.emulateMediaType('print');
   // Générer le PDF sans marges ni en-têtes/pieds de page
   await page.pdf({

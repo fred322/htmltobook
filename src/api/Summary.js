@@ -1,6 +1,9 @@
+import domUtils from "./DomUtils.js";
+
 class Summary {
     constructor() {
         this.sections = [];
+        this._lastAnchorId = 0;
     }
     createSummary() {
         // run across section to find all titles and add numbers
@@ -23,16 +26,38 @@ class Summary {
         if (sections == null) return;
         for (let section of sections) {
             let title = section.element.children[0].innerText;
+            let linkElement = document.createElement("a");
+            let anchor = section.element.getAttribute("id");
+            if (anchor == null) {
+                anchor = "__anchor_" + this._lastAnchorId;
+                this._lastAnchorId = this._lastAnchorId + 1;
+                section.element.setAttribute("id", anchor);
+            }
+            linkElement.setAttribute("href", "#" + anchor);
+
             let newElement = document.createElement("div");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
             newElement.innerText = newNumber + " - " + title;
             let pageSpan = document.createElement("span");
-            pageSpan.innerText = section.offsetTop;
+            pageSpan.innerText = domUtils.getPageNumber(section.element);
+            pageSpan.style = "float:right;";
+            section.pageNumberElement = pageSpan;
             newElement.appendChild(pageSpan);
-            summary.appendChild(newElement);
+            linkElement.appendChild(newElement);
+            summary.appendChild(linkElement);
 
             this.printSummaryEntry(summary, section.children, newNumber);
             count++;
+        }
+    }
+
+    updatePageNumbers() {
+        this._updatePageNumbers(this.sections);
+    }
+    _updatePageNumbers(sections) {
+        for (let section of sections) {
+            section.pageNumberElement.innerText = domUtils.getPageNumber(section.element);
+            this._updatePageNumbers(section.children);
         }
     }
 
