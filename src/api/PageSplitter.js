@@ -23,37 +23,29 @@ class PageSplitter {
     }
     
     breakPages() {
-        // header & footer are 2cm + 0.5cm padding
-        let pageSize = domUtils.cmToPixel(domUtils.a4Height);
-        let headerSize = domUtils.cmToPixel(3);
-        let contentSize = pageSize - 2 * headerSize;
-        let posToBreak = headerSize + contentSize;
-
         let articleNode = document.getElementsByTagName("article")[0];
         let existingBreaks = document.getElementsByTagName("break_page");
         let element = articleNode.children[0];
         this._initiateNextPage(element);
         do {
-            console.log("Creation new page");
-            let posY = this.currentPage * pageSize - this.currentPageProperties.footerHeight;
+            let posY = this.currentPageProperties.footerY;
             console.log("Look at pixel " + posY);
 
-            this._breakPagesToPos(existingBreaks, posY);
-
-            posY = this.currentPage * pageSize - this.currentPageProperties.footerHeight;
-
-            element = domUtils.findClosestChild(articleNode, articleNode.offsetTop, 
-                    posY, (el) => { return this.isBreakableElement(el)});
-            if (element != null && element.tagName.toLowerCase() != "article") {
-                element = this.findBreakableTagNames(element);
-                if (element != null) {
-                    this._breakAtElement(element, posY - posToBreak);
+            if (this._breakPagesToPos(existingBreaks, posY) == 0) {
+                element = domUtils.findClosestChild(articleNode, articleNode.offsetTop, 
+                        posY, (el) => { return this.isBreakableElement(el)});
+                if (element != null && element.tagName.toLowerCase() != "article") {
+                    element = this.findBreakableTagNames(element);
+                    if (element != null) {
+                        console.log("Break at element");
+                        this._breakAtElement(element);
+                    }
                 }
-            }
-            else {
-                element = null;
-                console.log("No element found");
-                break;
+                else {
+                    element = null;
+                    console.log("No element found");
+                    break;
+                }
             }
         } while (element != null);
     }
@@ -68,7 +60,8 @@ class PageSplitter {
         for (let element of breaksElement) {
             if (element.offsetHeight == 0 && !element.classList.contains("broken")) {
                 if (domUtils.getPositionAbsolute(element) < toPosY) {
-                    this._breakAtElement(element, 0);
+                    console.log("Break at break_page");
+                    this._breakAtElement(element);
                     count++;
                 }
                 else {
@@ -80,18 +73,19 @@ class PageSplitter {
         return count;
     }
 
-    _breakAtElement(element, offset) {
+    _breakAtElement(element) {
         let pageSize = domUtils.cmToPixel(domUtils.a4Height);
         let newBreak = document.createElement("div");
         element.parentElement.insertBefore(newBreak, element);
         // take position of newBreak because element is not necessary in DOM
-        let leftSize = pageSize * this.currentPage - domUtils.getPositionAbsolute(newBreak);
+        let leftSize = Math.ceil(this.currentPageProperties.endOfPageY - domUtils.getPositionAbsolute(newBreak));
         newBreak.setAttribute("style", "height: " + leftSize + "px" );
 
         this._initiateNextPage(element);
     }
 
     _initiateNextPage(firstElement) {
+        console.log("Creation new page");
         this._createNextPage();
 
         if (this.currentPageProperties.headerHeight > 0) {
@@ -110,8 +104,6 @@ class PageSplitter {
         newPage.classList.add("page");
         newPage.classList.add("page_" + (this.currentPage));
         newPage.classList.add((this.currentPage % 2) == 0 ? "even" : "odd");
-        let contentPage = document.createElement("div");
-        newPage.appendChild(contentPage);
         let header = document.createElement("div");
         header.classList.add("header");
         header.innerHTML = headerDefault.innerHTML;
@@ -124,9 +116,14 @@ class PageSplitter {
         newPage.appendChild(footer);
         pageBorders.appendChild(newPage);
 
+        let additionalMargin = 0;
+        let endOfPageY = domUtils.getPositionAbsolute(newPage) + newPage.offsetHeight;
         this.currentPageProperties = {
-            headerHeight: header.offsetHeight,
-            footerHeight: footer.offsetHeight
+            /* Footer can be not shown => use newPage */
+            footerY : Math.floor(endOfPageY - footer.offsetHeight),
+            headerHeight: Math.ceil(header.offsetHeight + additionalMargin),
+            footerHeight: Math.ceil(footer.offsetHeight + additionalMargin),
+            endOfPageY: Math.ceil(endOfPageY)
         }
     }
 }

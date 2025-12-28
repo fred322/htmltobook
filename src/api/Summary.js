@@ -36,12 +36,14 @@ class Summary {
             linkElement.setAttribute("href", "#" + anchor);
 
             let newElement = document.createElement("div");
+            newElement.classList.add("toc_item");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
             newElement.innerText = newNumber + " - " + title;
             let pageSpan = document.createElement("span");
             pageSpan.innerText = domUtils.getPageNumber(section.element);
-            pageSpan.style = "float:right;";
+            pageSpan.classList.add("toc_item_page_number");
             section.pageNumberElement = pageSpan;
+            newElement.appendChild(domUtils.createElement("span", { classes: ["toc_item_points" ]}));
             newElement.appendChild(pageSpan);
             linkElement.appendChild(newElement);
             summary.appendChild(linkElement);
