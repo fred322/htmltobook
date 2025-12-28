@@ -11,6 +11,19 @@ class DomUtils {
         this._pageHeight = this.cmToPixel(this.a4Height);
     }
 
+    createElement(name, options) {
+        let res = document.createElement(name);
+        if (options.classes != null) {
+            for (let element of options.classes) {
+                res.classList.add(element);
+            }
+        }
+        if (options.height != null) {
+            res.setAttribute("style", "height: " + options.height + "px");
+        }
+        return res;
+    }
+
     cmToPixel(cm) {
         return Math.floor(cm * this._cmToPixel);
     }

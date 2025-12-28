@@ -79,6 +79,13 @@ article {
     float: right;
 }
 
+.page_1 .header, .page_1 .footer {
+    display: none;
+}
+.page_3 .header, .page_3 .footer {
+    display: none;
+}
+
 /* Style pour le contenu principal */
 .content {
     padding-left: 1cm;
