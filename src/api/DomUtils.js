@@ -28,13 +28,17 @@ class DomUtils {
         return Math.floor(cm * this._cmToPixel);
     }
 
+    pixelToPdfPt(pixel) {
+        // 28,35 pt => 1 cm
+        return Math.floor((pixel * 28.35) / this._cmToPixel);
+    }
     /**
      * Get the absolute to position of given element.
      * @param {Element} element 
      * @returns 
      */
     getPositionAbsolute(element) {
-        return element.offsetTop + (element.parentElement != null ? this.getPositionAbsolute(element.parentElement) : 0);
+        return element.offsetTop + (element.offsetParent != null ? this.getPositionAbsolute(element.offsetParent) : 0);
     }
 
     /**
@@ -44,6 +48,14 @@ class DomUtils {
      */
     getPageNumber(element) {
         return Math.floor(this.getPositionAbsolute(element) / this._pageHeight) + 1;
+    }
+
+    /**
+     * Get the position in page for given element.
+     * @param {Element} element 
+     */
+    getPositionInPage(element) {
+        return this.getPositionAbsolute(element) - (this.getPageNumber(element) - 1) * this._pageHeight;
     }
 
     findClosestChild(parentElement, positionParent, posY, filter) {

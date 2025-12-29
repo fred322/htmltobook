@@ -25,7 +25,7 @@ class Summary {
         let count = 1;
         if (sections == null) return;
         for (let section of sections) {
-            let title = section.element.children[0].innerText;
+            section.title = section.element.children[0].innerText;
             let linkElement = document.createElement("a");
             let anchor = section.element.getAttribute("id");
             if (anchor == null) {
@@ -38,7 +38,7 @@ class Summary {
             let newElement = document.createElement("div");
             newElement.classList.add("toc_item");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
-            newElement.innerText = newNumber + " - " + title;
+            newElement.innerText = newNumber + " - " + section.title;
             let pageSpan = document.createElement("span");
             pageSpan.innerText = domUtils.getPageNumber(section.element);
             pageSpan.classList.add("toc_item_page_number");
@@ -56,9 +56,12 @@ class Summary {
     updatePageNumbers() {
         this._updatePageNumbers(this.sections);
     }
+
     _updatePageNumbers(sections) {
         for (let section of sections) {
-            section.pageNumberElement.innerText = domUtils.getPageNumber(section.element);
+            section.pageNumber = domUtils.getPageNumber(section.element);
+            section.pageNumberElement.innerText = section.pageNumber;
+            section.positionInPage = domUtils.getPositionInPage(section.element);
             this._updatePageNumbers(section.children);
         }
     }

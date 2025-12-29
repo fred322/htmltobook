@@ -1,3 +1,4 @@
+const fs = require("node:fs");
 const puppeteer = require('puppeteer');
 
 (async () => {
@@ -6,9 +7,12 @@ const puppeteer = require('puppeteer');
     args: ['--disable-gpu', '--no-sandbox']
   });
 
+  console.log("Printing page...");
   const page = await browser.newPage();
   await page.goto('http://localhost:8080/test.html', { waitUntil: 'networkidle0' });
   await page.emulateMediaType('print');
+  let content = await page.content();
+  fs.writeFileSync("export.xml", content);
   // Générer le PDF sans marges ni en-têtes/pieds de page
   await page.pdf({
     path: 'sortie.pdf',

@@ -1,5 +1,6 @@
 import Summary from "./Summary.js";
 import PageSplitter from "./PageSplitter.js";
+import Bookmarks from "./Bookmarks.js";
 
 import domUtils from "./DomUtils.js"
 
@@ -16,6 +17,12 @@ class HtmlToBook {
 
         this.updatePageNumbers();
         summary.updatePageNumbers();
+
+        let contentGs = new Bookmarks().generateContent(summary.sections);
+        let docElementGs = document.createElement("bookmarks");
+        docElementGs.innerHTML = contentGs;
+        docElementGs.style = "display: none";
+        document.body.appendChild(docElementGs);
     }
 
     updatePageNumbers() {
