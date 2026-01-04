@@ -25,7 +25,8 @@ class Summary {
         let count = 1;
         if (sections == null) return;
         for (let section of sections) {
-            section.title = section.element.children[0].innerText;
+            let titleElement = section.element.children[0];
+            section.title = titleElement.innerText;
             let linkElement = document.createElement("a");
             let anchor = section.element.getAttribute("id");
             if (anchor == null) {
@@ -38,7 +39,9 @@ class Summary {
             let newElement = document.createElement("div");
             newElement.classList.add("toc_item");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
+            section.number = newNumber;
             newElement.innerText = newNumber + " - " + section.title;
+            titleElement.innerText = newNumber + " " + titleElement.innerText;
             let pageSpan = document.createElement("span");
             pageSpan.innerText = domUtils.getPageNumber(section.element);
             pageSpan.classList.add("toc_item_page_number");

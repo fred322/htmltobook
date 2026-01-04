@@ -2,7 +2,8 @@ import domUtils from "./DomUtils.js"
 
 class PageSplitter {
     constructor() {
-        this.breakableTagNames = [ "div", "p", "table", "section", "tr" ];
+        this.breakableTagNames = [ "div", "section", "p", "table", "tbody", "tr", "ul", "li" ];
+        this.unbreakableTagNames = [ "a", "tr", "td", "th" ];
         this.currentPage = 0;
         this.currentPageProperties = null;
     }
@@ -10,6 +11,15 @@ class PageSplitter {
     isBreakableElement(element) {
         let elTagName = element.tagName.toLowerCase();
         for (let tagName of this.breakableTagNames) {
+            if (elTagName == tagName) {
+                return true;
+            }
+        }
+        return false;
+    }
+    isUnbreakableElement(element) {
+        let elTagName = element.tagName.toLowerCase();
+        for (let tagName of this.unbreakableTagNames) {
             if (elTagName == tagName) {
                 return true;
             }
@@ -27,16 +37,21 @@ class PageSplitter {
         let existingBreaks = document.getElementsByTagName("break_page");
         let element = articleNode.children[0];
         this._initiateNextPage(element);
+        let loopCount = 0;
         do {
             let posY = this.currentPageProperties.footerY;
             console.log("Look at pixel " + posY);
 
             if (this._breakPagesToPos(existingBreaks, posY) == 0) {
-                element = domUtils.findClosestChild(articleNode, articleNode.offsetTop, 
-                        posY, (el) => { return this.isBreakableElement(el)});
-                if (element != null && element.tagName.toLowerCase() != "article") {
-                    element = this.findBreakableTagNames(element);
+                element = domUtils.findClosestChild(articleNode, posY, 
+                    (el) => { return !this.isUnbreakableElement(el)});
+                if (element != null && element != articleNode && 
+                    element.tagName.toLowerCase() != "article") {
                     if (element != null) {
+                        if (element.offsetHeight >= domUtils.getPageHeight()) {
+                            console.error("Element: " + element.tagName + " too height");
+                            break;
+                        }
                         console.log("Break at element");
                         this._breakAtElement(element);
                     }
@@ -47,6 +62,11 @@ class PageSplitter {
                     break;
                 }
             }
+            if (domUtils.isDebug() && loopCount > 200) {
+                console.error("Too many loops in debug mode");
+                break;
+            }
+            loopCount++;
         } while (element != null);
     }
 
@@ -74,11 +94,12 @@ class PageSplitter {
     }
 
     _breakAtElement(element) {
-        let pageSize = domUtils.cmToPixel(domUtils.a4Height);
         let newBreak = document.createElement("div");
+        newBreak.classList.add("break_page");
         element.parentElement.insertBefore(newBreak, element);
         // take position of newBreak because element is not necessary in DOM
         let leftSize = Math.ceil(this.currentPageProperties.endOfPageY - domUtils.getPositionAbsolute(newBreak));
+        leftSize = Math.min(domUtils.getPageHeight(), leftSize);
         newBreak.setAttribute("style", "height: " + leftSize + "px" );
 
         this._initiateNextPage(element);
@@ -89,8 +110,9 @@ class PageSplitter {
         this._createNextPage();
 
         if (this.currentPageProperties.headerHeight > 0) {
-            firstElement.parentElement.insertBefore(
-                domUtils.createElement("div", { height: this.currentPageProperties.headerHeight }), firstElement)
+            let newElement = domUtils.createElement("div", { height: this.currentPageProperties.headerHeight });
+            newElement.classList.add("break_page");
+            firstElement.parentElement.insertBefore(newElement, firstElement)
         }
     }
     _createNextPage() {
@@ -99,30 +121,41 @@ class PageSplitter {
         let headerDefault = document.getElementsByTagName("header")[0];
         let footerDefault = document.getElementsByTagName("footer")[0];
 
-        let pageBorders = document.getElementById("pagesWrapper");
+        let pagesWrapper = document.getElementById("pagesWrapper");
+        if (pagesWrapper == null) {
+            pagesWrapper = document.createElement("div");
+            pagesWrapper.id = "pagesWrapper";
+            document.body.appendChild(pagesWrapper);
+        }
         let newPage = document.createElement("div");
         newPage.classList.add("page");
         newPage.classList.add("page_" + (this.currentPage));
         newPage.classList.add((this.currentPage % 2) == 0 ? "even" : "odd");
-        let header = document.createElement("div");
-        header.classList.add("header");
-        header.innerHTML = headerDefault.innerHTML;
-        header.setAttribute("style", "position: absolute");
-        let footer = document.createElement("div");
-        footer.classList.add("footer");
-        footer.innerHTML = footerDefault.innerHTML;
-        footer.setAttribute("style", "position: absolute");
-        newPage.appendChild(header);
-        newPage.appendChild(footer);
-        pageBorders.appendChild(newPage);
+        let header = null;
+        if (headerDefault != null) {
+            header = document.createElement("div");
+            header.classList.add("header");
+            header.innerHTML = headerDefault.innerHTML;
+            header.setAttribute("style", "position: absolute");
+            newPage.appendChild(header);
+        }
+        let footer = null;
+        if (footerDefault != null) {
+            footer = document.createElement("div");
+            footer.classList.add("footer");
+            footer.innerHTML = footerDefault.innerHTML;
+            footer.setAttribute("style", "position: absolute");
+            newPage.appendChild(footer);
+        }
+        pagesWrapper.appendChild(newPage);
 
         let additionalMargin = 0;
         let endOfPageY = domUtils.getPositionAbsolute(newPage) + newPage.offsetHeight;
         this.currentPageProperties = {
             /* Footer can be not shown => use newPage */
-            footerY : Math.floor(endOfPageY - footer.offsetHeight),
-            headerHeight: Math.ceil(header.offsetHeight + additionalMargin),
-            footerHeight: Math.ceil(footer.offsetHeight + additionalMargin),
+            footerY : Math.floor(endOfPageY - (footer != null ? footer.offsetHeight : 0)),
+            headerHeight: Math.ceil((header != null ? header.offsetHeight : 0) + additionalMargin),
+            footerHeight: Math.ceil((footer != null ? footer.offsetHeight : 0) + additionalMargin),
             endOfPageY: Math.ceil(endOfPageY)
         }
     }

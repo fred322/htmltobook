@@ -4,11 +4,23 @@ class DomUtils {
         this.a4Width = 21.0;
         this._cmToPixel = 0;
         this._pageHeight = 0;
+        
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        this.debug = urlParams.get("debug");
     }
 
     init() {
         this._cmToPixel = document.getElementsByTagName("body")[0].offsetWidth / this.a4Width;
         this._pageHeight = this.cmToPixel(this.a4Height);
+    }
+
+    isDebug() {
+        return this.debug;        
+    }
+
+    getPageHeight() {
+        return this._pageHeight;
     }
 
     createElement(name, options) {
@@ -58,19 +70,21 @@ class DomUtils {
         return this.getPositionAbsolute(element) - (this.getPageNumber(element) - 1) * this._pageHeight;
     }
 
-    findClosestChild(parentElement, positionParent, posY, filter) {
+    findClosestChild(parentElement, posY, filter) {
         if (parentElement.children.length != 0) {
             for (let child of parentElement.children) {
-                if (positionParent + child.offsetTop + child.offsetHeight >= posY) {
-                    let found = this.findClosestChild(child, positionParent + child.offsetTop, posY, filter);
-                    if (found != null) {
-                        return found;
+                if (domUtils.getPositionAbsolute(child) + child.offsetHeight >= posY) {
+                    if (filter(child)) {
+                        let found = this.findClosestChild(child, posY, filter);
+                        if (found != null) {
+                            return found;
+                        }
                     }
-                    break;
+                    return child;
                 }
             }
         }
-        return filter(parentElement) ? parentElement : null;
+        return parentElement;
     }
 }
 

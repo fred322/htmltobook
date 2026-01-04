@@ -114,13 +114,7 @@ Table of content item.
     float: right;
 }
 
-.page_1 .header, .page_1 .footer {
-    display: none;
-}
-.page_3 .header, .page_3 .footer {
-    display: none;
-}
-
-.header {
-    text-align: center;
+.debug .break_page {
+    border: solid 1px grey;
+    box-sizing: border-box;
 }

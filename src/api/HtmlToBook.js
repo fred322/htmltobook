@@ -10,6 +10,9 @@ class HtmlToBook {
     }
 
     run() {
+        if (domUtils.isDebug()) {
+            document.body.classList.add("debug");
+        }
         let pageSplitter = new PageSplitter();
         let summary = new Summary();
         summary.createSummary();

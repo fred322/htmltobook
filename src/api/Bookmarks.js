@@ -12,7 +12,7 @@ class Bookmarks {
         let content = "";
         for (let section of sections) {
             let countSubSignets = section.children.length;
-            content += "[ /Title (" + section.title + ")\n";
+            content += "[ /Title (" + section.number + "-" + section.title + ")\n";
             content += "  /Page " + (section.pageNumber - 1) + "\n";
             content += "  /View [/XYZ 0 -" + domUtils.pixelToPdfPt(section.positionInPage) + " 0]\n";
             if (countSubSignets > 0) {
