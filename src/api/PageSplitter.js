@@ -1,9 +1,12 @@
 import domUtils from "./DomUtils.js"
+import DomRunner from "./DomRunner.js"
 
 class PageSplitter {
     constructor() {
         this.breakableTagNames = [ "div", "section", "p", "table", "tbody", "tr", "ul", "li" ];
-        this.unbreakableTagNames = [ "a", "tr", "td", "th" ];
+        this.unbreakableTagNames = [ "a", "tr", "td", "th",
+            "h1", "h2", "h3", "h4", "h5", "h6", "li"
+        ];
         this.currentPage = 0;
         this.currentPageProperties = null;
     }
@@ -17,7 +20,15 @@ class PageSplitter {
         }
         return false;
     }
+    /**
+     * Indicates if the element should not contains break page.
+     * @param {Element} element 
+     * @returns 
+     */
     isUnbreakableElement(element) {
+        if (element.classList.contains("unbreakable")) {
+            return true;
+        }
         let elTagName = element.tagName.toLowerCase();
         for (let tagName of this.unbreakableTagNames) {
             if (elTagName == tagName) {
@@ -35,6 +46,7 @@ class PageSplitter {
     breakPages() {
         let articleNode = document.getElementsByTagName("article")[0];
         let existingBreaks = document.getElementsByTagName("break_page");
+        let domRunner = new DomRunner(articleNode);
         let element = articleNode.children[0];
         this._initiateNextPage(element);
         let loopCount = 0;
@@ -43,7 +55,7 @@ class PageSplitter {
             console.log("Look at pixel " + posY);
 
             if (this._breakPagesToPos(existingBreaks, posY) == 0) {
-                element = domUtils.findClosestChild(articleNode, posY, 
+                element = domRunner.findNext(posY, 
                     (el) => { return !this.isUnbreakableElement(el)});
                 if (element != null && element != articleNode && 
                     element.tagName.toLowerCase() != "article") {
@@ -79,7 +91,7 @@ class PageSplitter {
         let count = 0;
         for (let element of breaksElement) {
             if (element.offsetHeight == 0 && !element.classList.contains("broken")) {
-                if (domUtils.getPositionAbsolute(element) < toPosY) {
+                if (domUtils.getAbsolutePosition(element) < toPosY) {
                     console.log("Break at break_page");
                     this._breakAtElement(element);
                     count++;
@@ -98,7 +110,7 @@ class PageSplitter {
         newBreak.classList.add("break_page");
         element.parentElement.insertBefore(newBreak, element);
         // take position of newBreak because element is not necessary in DOM
-        let leftSize = Math.ceil(this.currentPageProperties.endOfPageY - domUtils.getPositionAbsolute(newBreak));
+        let leftSize = this.currentPageProperties.endOfPageY - domUtils.getAbsolutePosition(newBreak);
         leftSize = Math.min(domUtils.getPageHeight(), leftSize);
         newBreak.setAttribute("style", "height: " + leftSize + "px" );
 
@@ -149,14 +161,13 @@ class PageSplitter {
         }
         pagesWrapper.appendChild(newPage);
 
-        let additionalMargin = 0;
-        let endOfPageY = domUtils.getPositionAbsolute(newPage) + newPage.offsetHeight;
+        let endOfPageY = domUtils.getAbsolutePosition(newPage) + newPage.offsetHeight;
         this.currentPageProperties = {
             /* Footer can be not shown => use newPage */
-            footerY : Math.floor(endOfPageY - (footer != null ? footer.offsetHeight : 0)),
-            headerHeight: Math.ceil((header != null ? header.offsetHeight : 0) + additionalMargin),
-            footerHeight: Math.ceil((footer != null ? footer.offsetHeight : 0) + additionalMargin),
-            endOfPageY: Math.ceil(endOfPageY)
+            footerY : endOfPageY - (footer != null ? footer.offsetHeight : 0),
+            headerHeight: header != null ? header.offsetHeight : 0,
+            footerHeight: footer != null ? footer.offsetHeight : 0,
+            endOfPageY: endOfPageY
         }
     }
 }

@@ -8,3 +8,20 @@
 .header {
     text-align: center;
 }
+/* Style pour l'en-tête */
+#pagesWrapper .header {
+    height: 3cm;
+    background-color: rgba(55,255,50,0.3);
+    border-bottom: 1px solid #746969;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+
+/* Style pour le pied de page */
+#pagesWrapper .footer {
+    height: 3cm;
+    background-color: rgba(255,125,125,0.3);
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 0.8em;
+}

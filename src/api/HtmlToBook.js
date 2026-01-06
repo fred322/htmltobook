@@ -30,13 +30,13 @@ class HtmlToBook {
 
     updatePageNumbers() {
         let article = document.getElementsByTagName("article")[0];
-        let totalSize = domUtils.getPositionAbsolute(article) + article.offsetHeight;
+        let totalSize = domUtils.getAbsolutePosition(article) + article.offsetHeight;
         let pageSize = domUtils.cmToPixel(domUtils.a4Height);
         let pagesCount = Math.ceil(totalSize / pageSize);
         
         let pageNumberSpan = document.getElementsByClassName("pageNumber");
         for (let element of pageNumberSpan) {
-            let pageNumber = Math.ceil(domUtils.getPositionAbsolute(element) / pageSize);
+            let pageNumber = Math.ceil(domUtils.getAbsolutePosition(element) / pageSize);
             element.innerText = pageNumber;
         }
         let pagesCountSpan = document.getElementsByClassName("pagesCount");

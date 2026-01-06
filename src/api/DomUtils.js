@@ -7,7 +7,7 @@ class DomUtils {
         
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        this.debug = urlParams.get("debug");
+        this.debug = urlParams.get("debug") == "true";
     }
 
     init() {
@@ -17,6 +17,20 @@ class DomUtils {
 
     isDebug() {
         return this.debug;        
+    }
+
+    /**
+     * The value of given variable in meta.
+     * @param {string} varName 
+     */
+    getMetaValue(varName) {
+        let metas = document.getElementsByTagName("meta");
+        for (let meta of metas) {
+            if (meta.getAttribute("name") == varName) {
+                return meta.getAttribute("content");
+            }
+        }
+        return null;
     }
 
     getPageHeight() {
@@ -45,12 +59,21 @@ class DomUtils {
         return Math.floor((pixel * 28.35) / this._cmToPixel);
     }
     /**
-     * Get the absolute to position of given element.
+     * Get the absolute position of given element.
      * @param {Element} element 
      * @returns 
      */
-    getPositionAbsolute(element) {
-        return element.offsetTop + (element.offsetParent != null ? this.getPositionAbsolute(element.offsetParent) : 0);
+    getAbsolutePosition(element) {
+        return element.offsetTop + (element.offsetParent != null ? this.getAbsolutePosition(element.offsetParent) : 0);
+    }
+
+    /**
+     * Get the bottom absolute position of given element.
+     * @param {Element} element 
+     * @returns 
+     */
+    getBottomAbsolutePosition(element) {
+        return this.getAbsolutePosition(element) + element.offsetHeight + parseFloat(window.getComputedStyle(element).marginBottom);
     }
 
     /**
@@ -59,7 +82,7 @@ class DomUtils {
      * @returns 
      */
     getPageNumber(element) {
-        return Math.floor(this.getPositionAbsolute(element) / this._pageHeight) + 1;
+        return Math.floor(this.getAbsolutePosition(element) / this._pageHeight) + 1;
     }
 
     /**
@@ -67,24 +90,7 @@ class DomUtils {
      * @param {Element} element 
      */
     getPositionInPage(element) {
-        return this.getPositionAbsolute(element) - (this.getPageNumber(element) - 1) * this._pageHeight;
-    }
-
-    findClosestChild(parentElement, posY, filter) {
-        if (parentElement.children.length != 0) {
-            for (let child of parentElement.children) {
-                if (domUtils.getPositionAbsolute(child) + child.offsetHeight >= posY) {
-                    if (filter(child)) {
-                        let found = this.findClosestChild(child, posY, filter);
-                        if (found != null) {
-                            return found;
-                        }
-                    }
-                    return child;
-                }
-            }
-        }
-        return parentElement;
+        return this.getAbsolutePosition(element) - (this.getPageNumber(element) - 1) * this._pageHeight;
     }
 }
 
