@@ -4,7 +4,17 @@ class Summary {
     constructor() {
         this.sections = [];
         this._lastAnchorId = 0;
+        this._isNumberedSections = domUtils.getMetaValue("numberedSections") != "false";
     }
+
+    /**
+     * Indicates if section must be numbered.
+     * @returns true if sections must be counted
+     */
+    isNumberedSections() {
+        return this._isNumberedSections;
+    }
+
     createSummary() {
         // run across section to find all titles and add numbers
         let article = document.getElementsByTagName("article")[0];
@@ -25,7 +35,7 @@ class Summary {
         let count = 1;
         if (sections == null) return;
         for (let section of sections) {
-            let titleElement = section.element.children[0];
+            let titleElement = this._findTitleElement(section.element);
             section.title = titleElement.innerText;
             let linkElement = document.createElement("a");
             let anchor = section.element.getAttribute("id");
@@ -40,8 +50,13 @@ class Summary {
             newElement.classList.add("toc_item");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
             section.number = newNumber;
-            newElement.innerText = newNumber + " - " + section.title;
-            titleElement.innerText = newNumber + " " + titleElement.innerText;
+            if (this.isNumberedSections()) {
+                newElement.innerText = newNumber + " - " + section.title;
+                titleElement.innerText = newNumber + " " + titleElement.innerText;
+            }
+            else {
+                newElement.innerText = section.title;
+            }
             let pageSpan = document.createElement("span");
             pageSpan.innerText = domUtils.getPageNumber(section.element);
             pageSpan.classList.add("toc_item_page_number");
@@ -60,6 +75,14 @@ class Summary {
         this._updatePageNumbers(this.sections);
     }
 
+    _findTitleElement(section) {
+        for (let child of section.children) {
+            if (child.innerText.length != 0) {
+                return child;
+            }
+        }
+        return "No title";
+    }
     _updatePageNumbers(sections) {
         for (let section of sections) {
             section.pageNumber = domUtils.getPageNumber(section.element);
