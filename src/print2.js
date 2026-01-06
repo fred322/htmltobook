@@ -24,10 +24,10 @@ fs.writeFileSync("export.xml", content);
     format: 'A4', // Format de la page (A4, Letter, etc.)
     printBackground: true, // Inclure les arrière-plans
     margin: { // Marges (en pouces ou 'none')
-      top: '0.5in',
-      right: '0.5in',
-      bottom: '0.5in',
-      left: '0.5in'
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
     }
   });
 

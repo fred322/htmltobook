@@ -57,12 +57,12 @@ class DomUtils {
     }
 
     cmToPixel(cm) {
-        return Math.floor(cm * this._cmToPixel);
+        return cm * this._cmToPixel;
     }
 
     pixelToPdfPt(pixel) {
         // 28,35 pt => 1 cm
-        return Math.floor((pixel * 28.35) / this._cmToPixel);
+        return (pixel * 28.35) / this._cmToPixel;
     }
     /**
      * Get the absolute position of given element.

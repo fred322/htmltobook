@@ -149,12 +149,21 @@ class PageSplitter {
         newPage.classList.add("page");
         newPage.classList.add("page_" + (this.currentPage));
         newPage.classList.add((this.currentPage % 2) == 0 ? "even" : "odd");
+        pagesWrapper.appendChild(newPage);
+
+        let expectedPosition = (this.currentPage - 1)* domUtils.cmToPixel(domUtils.a4Height);
+        let realPosition = domUtils.getAbsolutePosition(newPage);
+        console.debug("Expected: " + expectedPosition + "; Got " + realPosition);
+        if (expectedPosition - realPosition > 1) {
+            // compense precision issue with pixels/cm.
+            newPage.setAttribute("style", "margin-top: " + (expectedPosition - realPosition) + "px");
+        }
+
         let header = null;
         if (headerDefault != null) {
             header = document.createElement("div");
             header.classList.add("header");
             header.innerHTML = headerDefault.innerHTML;
-            header.setAttribute("style", "position: absolute");
             newPage.appendChild(header);
         }
         let footer = null;
@@ -162,10 +171,8 @@ class PageSplitter {
             footer = document.createElement("div");
             footer.classList.add("footer");
             footer.innerHTML = footerDefault.innerHTML;
-            footer.setAttribute("style", "position: absolute");
             newPage.appendChild(footer);
         }
-        pagesWrapper.appendChild(newPage);
 
         let endOfPageY = domUtils.getAbsolutePosition(newPage) + newPage.offsetHeight;
         this.currentPageProperties = {
