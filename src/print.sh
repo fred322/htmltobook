@@ -2,7 +2,7 @@
 
 #chromium --headless --disable-gpu --print-to-pdf="sortie.pdf" "test.html"
 
-nodejs print.js
+nodejs print2.js
 sed -n '/<bookmarks.*>/,/<\/bookmarks>/p' export.xml | sed -z 's/<[^>]*>//g; s/^[[:space:]]*//; s/[[:space:]]*$//' > bookmarks.ps
 gs -dBATCH -dNOPAUSE -dQUIET \
    -sDEVICE=pdfwrite \

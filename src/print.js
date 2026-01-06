@@ -1,9 +1,10 @@
 const fs = require("node:fs");
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 
 (async () => {
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: '/snap/bin/chromium', // Exemple : '/usr/bin/google-chrome'
     args: ['--disable-gpu', '--no-sandbox']
   });
 
