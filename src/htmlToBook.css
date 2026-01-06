@@ -83,12 +83,14 @@ Table of content item.
 #pagesWrapper .page {
     position: relative;
     margin: auto;
-    border: solid 1px black;
-    box-sizing: border-box;
     width: 21cm; /* Largeur d'une feuille A4 */
     height: 29.7cm; /* Hauteur d'une feuille A4 */
 }
 
+.debug #pagesWrapper .page {
+    border: solid 1px black;
+    box-sizing: border-box;
+}
 /* Style pour l'en-tête */
 #pagesWrapper .header {
     position: absolute;

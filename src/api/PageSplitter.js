@@ -5,7 +5,7 @@ class PageSplitter {
     constructor() {
         this.breakableTagNames = [ "div", "section", "p", "table", "tbody", "tr", "ul", "li" ];
         this.unbreakableTagNames = [ "a", "tr", "td", "th",
-            "h1", "h2", "h3", "h4", "h5", "h6", "li", "p"
+            "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "pre"
         ];
         this.currentPage = 0;
         this.currentPageProperties = null;
@@ -56,7 +56,9 @@ class PageSplitter {
 
             if (this._breakPagesToPos(existingBreaks, posY) == 0) {
                 element = domRunner.findNext(posY, 
-                    (el) => { return !this.isUnbreakableElement(el)});
+                    (el) => { return !this.isUnbreakableElement(el)}, {
+                        getUpper: true
+                    });
                 if (element != null && element != articleNode && 
                     element.tagName.toLowerCase() != "article") {
                     if (element != null) {
@@ -105,6 +107,10 @@ class PageSplitter {
         return count;
     }
 
+    /**
+     * 
+     * @param {Element} element 
+     */
     _breakAtElement(element) {
         let newBreak = document.createElement("div");
         newBreak.classList.add("break_page");

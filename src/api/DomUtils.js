@@ -47,6 +47,12 @@ class DomUtils {
         if (options.height != null) {
             res.setAttribute("style", "height: " + options.height + "px");
         }
+        if (options.marginTop != null) {
+            res.setAttribute("style", "margin-top: " + options.marginTop + "px");
+        }
+        if (options.marginBottom != null) {
+            res.setAttribute("style", "margin-bottom: " + options.marginBottom + "px");
+        }
         return res;
     }
 

@@ -7,12 +7,13 @@ class DomRunner {
         this.currentIndex = 0;
     }
 
-    findNext(posY, filter) {
+    findNext(posY, filter, options) {
         if (this.current != null && this.current.element != null) {
             if (domUtils.getBottomAbsolutePosition(this.current.element) >= posY) {
-                let found = this.current.findNext(posY, filter);
+                let found = this.current.findNext(posY, filter, options);
                 if (found != null) {
-                    return found;
+                    return options.getUpper == true && found == this.current.element.children[0] ?
+                        this.current.element : found;
                 }
             }
             this.current.element = null;
@@ -26,9 +27,10 @@ class DomRunner {
                         this.current = new DomRunner();
                     }
                     this.current._setElement(element);
-                    let found = this.current.findNext(posY, filter);
+                    let found = this.current.findNext(posY, filter, options);
                     if (found != null) {
-                        return found;
+                        return options.getUpper == true && found == this.current.element.children[0] ?
+                            this.current.element : found;
                     }
                 }
                 return element;
