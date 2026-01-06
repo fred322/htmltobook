@@ -1,18 +1,25 @@
 import domUtils from "./DomUtils.js";
+import Summary from "./Summary.js";
 
 class Bookmarks {
-    constructor() {
+    /**
+     * 
+     * @param {Summary} summary 
+     */
+    constructor(summary) {
+        this.summary = summary;
     }
 
-    generateContent(sections) {
-        return "%!\n" + this._generateContent(sections, 1);
+    generateContent() {
+        return "%!\n" + this._generateContent(this.summary.sections, 1);
     }
 
     _generateContent(sections, level) {
+        let numberingSections = this.summary.isNumberedSections();
         let content = "";
         for (let section of sections) {
             let countSubSignets = section.children.length;
-            content += "[ /Title (" + section.number + "-" + section.title + ")\n";
+            content += "[ /Title (" + (numberingSections == false ? "" : section.number + "-") + section.title + ")\n";
             content += "  /Page " + (section.pageNumber - 1) + "\n";
             content += "  /View [/XYZ 0 -" + domUtils.pixelToPdfPt(section.positionInPage) + " 0]\n";
             if (countSubSignets > 0) {

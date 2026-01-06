@@ -21,7 +21,7 @@ class HtmlToBook {
         this.updatePageNumbers();
         summary.updatePageNumbers();
 
-        let contentGs = new Bookmarks().generateContent(summary.sections);
+        let contentGs = new Bookmarks(summary).generateContent();
         let docElementGs = document.createElement("bookmarks");
         docElementGs.innerHTML = contentGs;
         docElementGs.style = "display: none";

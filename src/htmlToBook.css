@@ -95,6 +95,9 @@ Table of content item.
     top: 0;
     left: 0;
     right: 0;
+    /* in first plane to not be hidden by background color of splitted elements */
+    z-index: 100;
+    background-color: white;
 }
 
 /* Style pour le pied de page */
@@ -103,7 +106,15 @@ Table of content item.
     bottom: 0;
     left: 0;
     right: 0;
+    /* in first plane to not be hidden by background color of splitted elements */
+    z-index: 100;
+    background-color: white;
 }
+
+.debug #pagesWrapper .header, .debug #pagesWrapper .footer {
+    background-color: transparent;
+}
+
 #pagesWrapper .centerPart {
     margin: auto;
     width: 50px;

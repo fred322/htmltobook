@@ -39,6 +39,9 @@ class DomRunner {
     _setElement(element) {
         this.element = element;
         this.currentIndex = 0;
+        if (this.current != null) {
+            this.current.element = null;
+        }
     }
 };
 
