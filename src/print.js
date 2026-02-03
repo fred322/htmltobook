@@ -20,7 +20,7 @@ const puppeteer = require('puppeteer-core');
     format: 'A4',
     printBackground: true,
     displayHeaderFooter: false, // Désactive l'en-tête et le pied de page
-    preferCSSPageSize: false,
+    preferCSSPageSize: true,
     margin: {
       top: 0,
       bottom: 0,

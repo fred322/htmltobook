@@ -2,6 +2,7 @@
 # this script will create one js file containing all the code.
 # The generated js file can be included without server need.
 
+cd $(dirname $0)
 final_file=htmlToBook_all.js
 cat api/DomUtils.js \
     api/DomRunner.js \

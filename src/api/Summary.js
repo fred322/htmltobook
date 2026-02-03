@@ -18,7 +18,7 @@ class Summary {
     createSummary() {
         // run across section to find all titles and add numbers
         let article = document.getElementsByTagName("article")[0];
-        let summary = document.getElementsByTagName("summary")[0];
+        let summary = document.getElementById("toc");
         this.analyseSections(article);
         this.printSummaryEntry(summary, this.sections, "");
     }

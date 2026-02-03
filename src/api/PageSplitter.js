@@ -9,6 +9,8 @@ class PageSplitter {
         ];
         this.currentPage = 0;
         this.currentPageProperties = null;
+
+        this.articleNode = document.getElementsByTagName("article")[0];
     }
 
     isBreakableElement(element) {
@@ -44,10 +46,9 @@ class PageSplitter {
     }
     
     breakPages() {
-        let articleNode = document.getElementsByTagName("article")[0];
         let existingBreaks = document.getElementsByTagName("break_page");
-        let domRunner = new DomRunner(articleNode);
-        let element = articleNode.children[0];
+        let domRunner = new DomRunner(this.articleNode);
+        let element = this.articleNode.children[0];
         this._initiateNextPage(element);
         let loopCount = 0;
         do {
@@ -59,7 +60,7 @@ class PageSplitter {
                     (el) => { return !this.isUnbreakableElement(el)}, {
                         getUpper: true
                     });
-                if (element != null && element != articleNode && 
+                if (element != null && element != this.articleNode && 
                     element.tagName.toLowerCase() != "article") {
                     if (element != null) {
                         if (element.offsetHeight >= domUtils.getPageHeight()) {
@@ -129,7 +130,7 @@ class PageSplitter {
 
         if (this.currentPageProperties.headerHeight > 0) {
             let newElement = domUtils.createElement("div", { height: this.currentPageProperties.headerHeight });
-            newElement.classList.add("break_page");
+            newElement.classList.add("header_space");
             firstElement.parentElement.insertBefore(newElement, firstElement)
         }
     }
@@ -143,7 +144,7 @@ class PageSplitter {
         if (pagesWrapper == null) {
             pagesWrapper = document.createElement("div");
             pagesWrapper.id = "pagesWrapper";
-            document.body.appendChild(pagesWrapper);
+            document.body.insertBefore(pagesWrapper, this.articleNode);
         }
         let newPage = document.createElement("div");
         newPage.classList.add("page");
@@ -151,13 +152,14 @@ class PageSplitter {
         newPage.classList.add((this.currentPage % 2) == 0 ? "even" : "odd");
         pagesWrapper.appendChild(newPage);
 
-        let expectedPosition = (this.currentPage - 1)* domUtils.cmToPixel(domUtils.a4Height);
+        let expectedPosition = Math.round((this.currentPage - 1)* domUtils.cmToPixel(domUtils.a4Height));
         let realPosition = domUtils.getAbsolutePosition(newPage);
         console.debug("Expected: " + expectedPosition + "; Got " + realPosition);
-        if (expectedPosition - realPosition > 1) {
+        //if (expectedPosition - realPosition > 1 && this.previousPage != null) {
             // compense precision issue with pixels/cm.
-            newPage.setAttribute("style", "margin-top: " + (expectedPosition - realPosition) + "px");
-        }
+            //newPage.setAttribute("style", "margin-top: " + (expectedPosition - realPosition) + "px");
+        //    this.previousPage.setAttribute("style", "height: calc(29.7cm + " + (expectedPosition - realPosition) + "px)");
+        //}
 
         let header = null;
         if (headerDefault != null) {
@@ -172,7 +174,12 @@ class PageSplitter {
             footer.classList.add("footer");
             footer.innerHTML = footerDefault.innerHTML;
             newPage.appendChild(footer);
+
+            // fix the height of footer, otherwise seems to have render issues in PDF.
+            footer.setAttribute("style", "height: " + footer.offsetHeight + "px");
         }
+
+        this.previousPage = newPage;
 
         let endOfPageY = domUtils.getAbsolutePosition(newPage) + newPage.offsetHeight;
         this.currentPageProperties = {

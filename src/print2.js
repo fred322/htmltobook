@@ -1,5 +1,5 @@
 const fs = require("node:fs");
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-core');
 
 (async () => {
   // Lancer le navigateur (Chromium par défaut)
@@ -22,7 +22,9 @@ fs.writeFileSync("export.xml", content);
   await page.pdf({
     path: 'sortie.pdf', // Chemin où enregistrer le PDF
     format: 'A4', // Format de la page (A4, Letter, etc.)
-    printBackground: true, // Inclure les arrière-plans
+    printBackground: true,
+    displayHeaderFooter: false, // Désactive l'en-tête et le pied de page
+    preferCSSPageSize: true,
     margin: { // Marges (en pouces ou 'none')
       top: 0,
       right: 0,

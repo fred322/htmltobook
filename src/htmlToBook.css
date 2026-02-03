@@ -15,7 +15,6 @@ body {
     left: 0;
     padding: 0;
     width: 21cm; /* Largeur d'une feuille A4 */
-    height: 29.7cm; /* Hauteur d'une feuille A4 */
     font-family: Arial, sans-serif;
     line-height: 1.0;
     background-color: red;
@@ -33,25 +32,25 @@ td, th {
     border: solid 1px black;
 }
 /**
-Set overflow: auto 
+Set overflow: inherit 
 to include possible margin of children in the height of the div.
 */
 div {
-    overflow: auto;
+    overflow: inherit;
 }
 section {
-    overflow: auto;
+    overflow: inherit;
 }
 
 article {
     position: relative;
-    z-index: 100;
+    z-index: 50;
     width: calc(100%-2cm);
     padding-left: 1cm;
     padding-right: 1cm;
 }
 
-summary {
+#toc {
     width: 100%;
 }
 
@@ -85,6 +84,7 @@ Table of content item.
     margin: auto;
     width: 21cm; /* Largeur d'une feuille A4 */
     height: 29.7cm; /* Hauteur d'une feuille A4 */
+    break-after: page;
 }
 
 .debug #pagesWrapper .page {
@@ -132,4 +132,14 @@ Table of content item.
 .debug .break_page {
     border: solid 1px grey;
     box-sizing: border-box;
+}
+
+@media print {
+ 
+
+.break_page {
+    break-after: page;
+    height: 0 !important;
+}
+
 }

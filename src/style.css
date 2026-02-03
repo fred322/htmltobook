@@ -19,9 +19,44 @@
 
 /* Style pour le pied de page */
 #pagesWrapper .footer {
-    height: 3cm;
-    background-color: rgba(255,125,125,0.3);
+    background-color: rgba(120, 118, 238, 0.932);
     border-top: 1px solid #ccc;
     box-sizing: border-box;
     font-size: 0.8em;
+}
+
+div.head h1 {
+	font-family: sans-serif;
+	font-size: 15px;
+	text-align: center;
+}
+div.head {
+	font-family: sans-serif;
+	border-top: solid 1px #5A4799;
+	border-bottom: solid 1px #5A4799;
+	/*background-color: #FAFAFF;*/
+	background-color: red;
+	padding: 11px;
+}
+div.head p {
+	font-family: sans-serif;
+	font-size: 9px;
+	text-align: right;
+}
+
+div.foot {
+    position: relative;
+	border-top: 1px solid #5A4799;
+	border-bottom: 1px solid #5A4799;
+	/* background-color: #FAFAFF;*/
+	background-color: blue;
+	padding: 10px;
+	box-sizing: border-box;
+	height: 2cm;
+}
+div.foot * {
+	padding: 0px;
+	margin: 0px;
+	font-size: 9px;
+	text-align: right;
 }
