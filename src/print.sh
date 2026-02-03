@@ -3,9 +3,18 @@
 #chromium --headless --disable-gpu --print-to-pdf="sortie.pdf" "test.html"
 #chromium --headless --disable-gpu --print-to-pdf-no-header --print-to-pdf="page.pdf" http://localhost:8080/test.html
 
-nodejs print2.js
+file=$1
+script="print.js"
+if [ "$file" != "" ]; then
+   file="file://$(pwd)/$file"
+   sed "s~{PATH}~$file~g" $script > printTmp.js
+   script="printTmp.js"
+fi
+nodejs $script
 sed -n '/<bookmarks.*>/,/<\/bookmarks>/p' export.xml | sed -z 's/<[^>]*>//g; s/^[[:space:]]*//; s/[[:space:]]*$//' > bookmarks.ps
 gs -dBATCH -dNOPAUSE -dQUIET \
    -sDEVICE=pdfwrite \
-   -sOutputFile=sortie2.pdf \
+   -sOutputFile=output.pdf \
    sortie.pdf bookmarks.ps
+
+echo "File output.pdf created"

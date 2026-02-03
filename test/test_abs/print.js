@@ -12,7 +12,7 @@ const { chromium } = require('playwright-core');
   const page = await browser.newPage();
 
   // Naviguer vers l'URL de ton choix
-  await page.goto('http://localhost:8080/test.html', {
+  await page.goto('{PATH}', {
     waitUntil: 'networkidle' // Attendre que le réseau soit inactif
   });
 let content = await page.content();

@@ -49,6 +49,7 @@ class PageSplitter {
         let existingBreaks = document.getElementsByTagName("break_page");
         let domRunner = new DomRunner(this.articleNode);
         let element = this.articleNode.children[0];
+        let lastElementBroken = null;
         this._initiateNextPage(element);
         let loopCount = 0;
         do {
@@ -62,13 +63,14 @@ class PageSplitter {
                     });
                 if (element != null && element != this.articleNode && 
                     element.tagName.toLowerCase() != "article") {
-                    if (element != null) {
-                        if (element.offsetHeight >= domUtils.getPageHeight()) {
-                            console.error("Element: " + element.tagName + " too height");
-                            break;
-                        }
+                    if (lastElementBroken != null && lastElementBroken == element) {
+                        console.error("The element " + element.tagName + " cannot be broken. It should be too height");
+                        break;
+                    }
+                    else if (element != null) {
                         console.log("Break at element");
                         this._breakAtElement(element);
+                        lastElementBroken = element;
                     }
                 }
                 else {

@@ -1,33 +1,38 @@
 const fs = require("node:fs");
-const puppeteer = require('puppeteer-core');
+const { chromium } = require('playwright-core');
 
 (async () => {
-  const browser = await puppeteer.launch({
+  // Lancer le navigateur (Chromium par défaut)
+  const browser = await chromium.launch({ 
     headless: true,
-    executablePath: '/snap/bin/chromium', // Exemple : '/usr/bin/google-chrome'
-    args: ['--disable-gpu', '--no-sandbox']
-  });
+    executablePath: '/snap/bin/chromium' // Exemple : '/usr/bin/google-chrome'
+ });
 
-  console.log("Printing page...");
+  // Ouvrir une nouvelle page
   const page = await browser.newPage();
-  await page.goto('http://localhost:8080/test.html', { waitUntil: 'networkidle0' });
-  await page.emulateMediaType('print');
-  let content = await page.content();
-  fs.writeFileSync("export.xml", content);
-  // Générer le PDF sans marges ni en-têtes/pieds de page
+
+  // Naviguer vers l'URL de ton choix
+  await page.goto('http://localhost:8080/test.html', {
+    waitUntil: 'networkidle' // Attendre que le réseau soit inactif
+  });
+let content = await page.content();
+fs.writeFileSync("export.xml", content);
+
+  // Générer le PDF
   await page.pdf({
-    path: 'sortie.pdf',
-    format: 'A4',
+    path: 'sortie.pdf', // Chemin où enregistrer le PDF
+    format: 'A4', // Format de la page (A4, Letter, etc.)
     printBackground: true,
     displayHeaderFooter: false, // Désactive l'en-tête et le pied de page
     preferCSSPageSize: true,
-    margin: {
+    margin: { // Marges (en pouces ou 'none')
       top: 0,
+      right: 0,
       bottom: 0,
-      left: 0,
-      right: 0
+      left: 0
     }
   });
 
+  // Fermer le navigateur
   await browser.close();
 })();
