@@ -1,6 +1,6 @@
 node_modules
 package-lock.json
-src/*_all.js*
 *.ps
 *.xml
 *.pdf
+build
