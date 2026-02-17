@@ -1,3 +1,8 @@
+/**
+ * Copyright 2026 fred322
+ * https://github.com/fred322
+ * 
+ */
 import domUtils from "./DomUtils.js";
 
 class Summary {

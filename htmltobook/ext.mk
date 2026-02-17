@@ -16,7 +16,12 @@ HTML_TO_BOOK_TO_MERGE:=$(patsubst %,src/%,api/DomUtils.js \
 TARGETFILES+=$(HTML_TO_BOOK_MERGED)
 
 $(HTML_TO_BOOK_MERGED): $(SRCFILES)
-	@cat $(HTML_TO_BOOK_TO_MERGE) | grep -E -v "export|import" > $@
+	@echo "" > $@.tmp
+	@for file in $(HTML_TO_BOOK_TO_MERGE); do \
+		cat $$file | grep -E -v "^(export|import)" >> $@.tmp; \
+		echo "" >> $@.tmp; \
+	done;
+	@mv $@.tmp $@
 
 # launch the server to be able to test
 .PHONY: launch
@@ -36,7 +41,6 @@ test_simple: all-impl
 	@mkdir -p $(TTARGETDIR)
 	@cp -r test/test_simple $(TTARGETDIR)/
 	@cp -r $(TRDIR)/*.js $(TRDIR)/*.css $(TRDIR)/api $(TTARGETDIR)/test_simple/
-	@cd $(TTARGETDIR)/test_simple && $(MODROOT)/src/print.sh test.html
 	@cd $(TTARGETDIR)/test_simple && npx http-server -p 8080
 
 test::

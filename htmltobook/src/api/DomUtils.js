@@ -1,3 +1,9 @@
+/**
+ * Copyright 2026 fred322
+ * https://github.com/fred322
+ * 
+ */
+
 class DomUtils {
     constructor() {
         this.a4Height = 29.7;

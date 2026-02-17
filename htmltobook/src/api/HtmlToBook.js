@@ -1,3 +1,9 @@
+/**
+ * Copyright 2026 fred322
+ * https://github.com/fred322
+ * 
+ */
+
 import Summary from "./Summary.js";
 import PageSplitter from "./PageSplitter.js";
 import Bookmarks from "./Bookmarks.js";

@@ -11,7 +11,9 @@ if [ "$file" != "" ]; then
    script="printTmp.js"
 fi
 nodejs $script
-sed -n '/<bookmarks.*>/,/<\/bookmarks>/p' export.xml | sed -z 's/<[^>]*>//g; s/^[[:space:]]*//; s/[[:space:]]*$//' > bookmarks.ps
+sed -n '/<bookmarks.*>/,/<\/bookmarks>/p' export.xml | \
+   sed -z 's/<[^>]*>//g; s/^[[:space:]]*//; s/[[:space:]]*$//' | \
+   sed 's/&nbsp;/ /g' > bookmarks.ps
 gs -dBATCH -dNOPAUSE -dQUIET \
    -sDEVICE=pdfwrite \
    -sOutputFile=output.pdf \
