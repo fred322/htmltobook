@@ -1140,7 +1140,7 @@ obj/%.o: src/%.c
                     
                             <div name="code-6" class="code">
                                 <pre>
-                                    <code class="make"># include application specific parameters
+                                    <code class="make" style="text-wrap: auto;"># include application specific parameters
 include app.cfg
 # include the main ABS makefile
 include .abs/core/main.mk
@@ -1317,9 +1317,7 @@ include .abs/core/main.mk
                                                  is not relevant for a documentation module), the specific ABS scripts shall be tolerant to the use of the target anyway. That means using such target shall not fail in this case but only report nothing has to be done. Thus all modules, whatever the type, can be handled the same way at the highest level and the automation of module target calling sequence just by simple recursions is feasible.  
                     
                             <div class="fig">
-                                <a name="fig-1" href="abs-class-uml.png">
-                                    <img src="abs-class-uml.png" alt="ABS interfaces and module types hierarchy" />
-                                </a>
+                                <img src="abs-class-uml.png" alt="ABS interfaces and module types hierarchy" />
                                 <br />
                                 	Figure 1 - ABS interfaces and module types hierarchy
                             </div>

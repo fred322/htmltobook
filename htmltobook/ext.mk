@@ -23,7 +23,7 @@ $(HTML_TO_BOOK_MERGED): $(SRCFILES)
 launch: $(TARGETFILES)
 	@cd $(TRDIR) && npx http-server -p 8080
 
-test_abs: $(TARGETFILES)
+test_abs: $(HTML_TO_BOOK_MERGED) all-impl
 	@mkdir -p $(TTARGETDIR)
 	@cp -r test/test_abs $(TTARGETDIR)/
 	@cp $< $(TTARGETDIR)/test_abs/
@@ -32,7 +32,7 @@ test_abs: $(TARGETFILES)
 	@cd $(TTARGETDIR)/test_abs && tar -xf highlight.js.tar.gz
 	@cd $(TTARGETDIR)/test_abs && $(MODROOT)/src/print.sh ABS_manual_170983b.pdf.html
 
-test_simple: $(TARGETFILES)
+test_simple: all-impl
 	@mkdir -p $(TTARGETDIR)
 	@cp -r test/test_simple $(TTARGETDIR)/
 	@cp -r $(TRDIR)/*.js $(TRDIR)/*.css $(TRDIR)/api $(TTARGETDIR)/test_simple/
