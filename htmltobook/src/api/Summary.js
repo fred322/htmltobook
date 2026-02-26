@@ -50,25 +50,23 @@ class Summary {
                 section.element.setAttribute("id", anchor);
             }
             linkElement.setAttribute("href", "#" + anchor);
+            linkElement.classList.add("toc_item");
 
-            let newElement = document.createElement("div");
-            newElement.classList.add("toc_item");
             let newNumber = (number.length != 0 ? number + "." : "") + count;
             section.number = newNumber;
             if (this.isNumberedSections()) {
-                newElement.innerText = newNumber + " - " + section.title;
+                linkElement.innerText = newNumber + " - " + section.title;
                 titleElement.innerText = newNumber + " " + titleElement.innerText;
             }
             else {
-                newElement.innerText = section.title;
+                linkElement.innerText = section.title;
             }
             let pageSpan = document.createElement("span");
             pageSpan.innerText = domUtils.getPageNumber(section.element);
             pageSpan.classList.add("toc_item_page_number");
             section.pageNumberElement = pageSpan;
-            newElement.appendChild(domUtils.createElement("span", { classes: ["toc_item_points" ]}));
-            newElement.appendChild(pageSpan);
-            linkElement.appendChild(newElement);
+            linkElement.appendChild(domUtils.createElement("span", { classes: ["toc_item_points" ]}));
+            linkElement.appendChild(pageSpan);
             summary.appendChild(linkElement);
 
             this.printSummaryEntry(summary, section.children, newNumber);
