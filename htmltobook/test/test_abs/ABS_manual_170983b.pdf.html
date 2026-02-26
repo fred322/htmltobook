@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xml:lang="fr" lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<html xml:lang="fr" lang="fr" xmlns="http://www.w3.org/1999/xhtml"  class="landscape">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="numberedSections" content="false" />
+        <style>
+            :root {
+                --page_orientation: landscape;
+            }
+        </style>
         <title>Acrobatomatic Build System - generic make files and companion scripts</title>
         <meta name="description" content="ABS (Acrobatomatic Build System) n°34 is a set of tool mainly made of&#10;make files to support software development. It enables complete software project&#10;technical management: chain compilation step for build binaries and distribuable&#10;package, fetch dependencies package, run tests, support continuous integration&#10;automated builds, and generate documentation." xmlns="" />
         <meta name="keywords" content="build, compilation, document generation, unit test, software package" xmlns="" />
@@ -12,7 +17,6 @@
         <link rel="stylesheet" href="./style_pdf.css" />
     </head>
     <body>
-        <a name="top" />
         <header xmlns="">
             <div class="head">
                 <h1>
@@ -21,6 +25,14 @@
                 <p aligh="right"> n°170983b, Issue 4 - Revision d0d5def - 2023-10-13</p>
             </div>
         </header>
+        <footer xmlns="">
+            <div class="foot">
+                <p>
+Copyright (c) 2019 Seb, 
+Context: Component abs-3.4.28d - Generated: 2026-01-30 23:20:57+01:00 / 
+                <span class="pageNumber"></span> / <span class="pagesCount"></span></p>
+            </div>
+        </footer>
         <article xmlns="">
             <div class="toc">
                 <h3>Summary</h3>
@@ -6624,13 +6636,6 @@ HEMLTOXML_MAP+=&lt;template name&gt;:$(_absext_index_prjexample_extmodexample)/s
                     
             </section>
         </article>
-        <footer xmlns="">
-            <div class="foot">
-                <p>
-Copyright (c) 2019 Seb, 
-Context: Component abs-3.4.28d - Generated: 2026-01-30 23:20:57+01:00</p>
-            </div>
-        </footer>
         <script src="./highlight/highlight.js"> </script>
         <script>hljs.initHighlightingOnLoad();</script>
         <script type="text/javascript" src="./htmlToBook_all.js"> </script>

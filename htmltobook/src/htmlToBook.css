@@ -3,10 +3,15 @@
  * https://github.com/fred322
  * 
  */
- 
+
+:root {
+    --a4_height: 297mm;
+    --a4_width: 210mm;
+}
+
 /* Définition de la taille A4 et des marges */
 @page {
-    size: A4;
+    size: A4 var(--page_orientation);
     margin-top: 0;
     margin-bottom: 0;
     margin-right: 0;
@@ -19,10 +24,14 @@ body {
     right: 0;
     left: 0;
     padding: 0;
-    width: 21cm; /* Largeur d'une feuille A4 */
+    width: var(--a4_width);
     font-family: Arial, sans-serif;
     line-height: 1.0;
     margin: auto;
+}
+
+.landscape body {
+    width: var(--a4_height);
 }
 
 footer, header {
@@ -86,9 +95,14 @@ Table of content item.
 #pagesWrapper .page {
     position: relative;
     margin: auto;
-    width: 21cm; /* Largeur d'une feuille A4 */
-    height: 29.7cm; /* Hauteur d'une feuille A4 */
+    width: var(--a4_width);
+    height: var(--a4_height);
     break-after: page;
+}
+
+.landscape #pagesWrapper .page {
+    width: var(--a4_height);
+    height: var(--a4_width);
 }
 
 .debug #pagesWrapper .page {
@@ -138,9 +152,20 @@ Table of content item.
     box-sizing: border-box;
 }
 
+/*
+Images takes max 75% of the page (TODO find a better way to avoid images overflow the page).
+*/
+img {
+    max-height: calc(var(--a4_height) * 0.75);
+    max-width: calc(var(--a4_width) * 0.75);
+}
+.landscape img {
+    max-height: calc(var(--a4_width) * 0.75);
+    max-width: calc(var(--a4_height) * 0.75);
+}
+
 @media print {
  
-
 .break_page {
     break-after: page;
     height: 0 !important;

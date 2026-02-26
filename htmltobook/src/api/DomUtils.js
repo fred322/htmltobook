@@ -17,8 +17,14 @@ class DomUtils {
     }
 
     init() {
-        this._cmToPixel = document.getElementsByTagName("body")[0].offsetWidth / this.a4Width;
-        this._pageHeight = this.cmToPixel(this.a4Height);
+        // create fake page to have dimensions of pages.
+        let element = document.createElement("div");
+        element.style = "height: 2px; width: 210mm; position: absolute; top: 0; left: 0;";
+        document.body.appendChild(element);
+        this._cmToPixel = element.offsetWidth / 21.0;
+
+        this.isLandscape = document.body.classList.contains("landscape");
+        this._pageHeight = this.cmToPixel(this.isLandscape ? this.a4Width : this.a4Height);
     }
 
     isDebug() {

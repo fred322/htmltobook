@@ -10,7 +10,7 @@ class PageSplitter {
     constructor() {
         this.breakableTagNames = [ "div", "section", "p", "table", "tbody", "tr", "ul", "li" ];
         this.unbreakableTagNames = [ "a", "tr", "td", "th",
-            "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "pre"
+            "h1", "h2", "h3", "h4", "h5", "h6", "p", "pre"
         ];
         this.currentPage = 0;
         this.currentPageProperties = null;
